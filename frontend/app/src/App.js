@@ -4,14 +4,20 @@ import { useEffect, useState } from 'react'
 function App() {
     const [todos, setTodos] = useState([])
     const [input, setInput] = useState('')
+    const [loading, setLoading] = useState(true)
+    const [loadingPost, setLoadingPost] = useState(false)
 
     const fetchTodos = () => {
         fetch('/todos')
             .then((res) => res.json())
-            .then((data) => setTodos(data))
+            .then((data) => {
+                setLoading(false)
+                setTodos(data)
+            })
     }
 
     const addTodo = (id) => {
+        setLoadingPost(true)
         const bodyObject = {
             id: id,
             desc: input,
@@ -25,7 +31,7 @@ function App() {
             },
         })
             .then((res) => res.json())
-            .then((data) => console.log(data))
+            .then((data) => setLoadingPost(false))
         fetchTodos()
     }
 
@@ -33,21 +39,45 @@ function App() {
 
     return (
         <div className="App">
-            {todos.map((todo, index) => (
-                <h2 key={index}>
-                    id:{todo.id}
-                    <br />
-                    {todo.desc}
-                </h2>
-            ))}
+            {loading ? (
+                <div className="loading">
+                    <h1>loading...</h1>
+                </div>
+            ) : (
+                <div>
+                    {todos.map((todo, index) => (
+                        <div key={index}>
+                            <h2>
+                                id:{todo.id}
+                                <br />
+                                {todo.desc}
+                            </h2>
+                            <button
+                                onClick={() => {
+                                    fetch(`/todos/${todo.id}`, { method: 'DELETE' })
+                                        .then(() => fetchTodos())
+                                        .catch((err) => console.log(err))
+                                }}
+                            >
+                                delete
+                            </button>
+                        </div>
+                    ))}
 
-            <input
-                type="text"
-                value={input}
-                placeholder="enter description"
-                onChange={(evt) => setInput(evt.target.value)}
-            />
-            <button onClick={() => addTodo(todos[todos.length - 1].id + 1)}>add Todo</button>
+                    <input
+                        type="text"
+                        value={input}
+                        placeholder="enter description"
+                        onChange={(evt) => setInput(evt.target.value)}
+                    />
+                    <button
+                        disabled={loadingPost}
+                        onClick={() => addTodo(todos[todos.length - 1].id + 1)}
+                    >
+                        add Todo
+                    </button>
+                </div>
+            )}
         </div>
     )
 }

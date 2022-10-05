@@ -1,26 +1,14 @@
 [
   {
-    "id": 1,
-    "desc": "wake up"
-  },
-  {
-    "id": 2,
-    "desc": "write backend"
-  },
-  {
-    "id": 3,
-    "desc": "fetch from frontend"
-  },
-  {
-    "id": 4,
-    "desc": "valami"
-  },
-  {
     "id": 5,
     "desc": "reload page"
   },
   {
     "id": 6,
     "desc": "debug"
+  },
+  {
+    "id": 7,
+    "desc": "teszt"
   }
 ]
